@@ -21,8 +21,12 @@ function add() {
     message.value = '';
 }
 
-let doneItems = computed(() => items.value.filter(item => item.isDone));
-let toDoItems = computed(() => items.value.filter(item => !item.isDone));
+// kõige olulisem ees; koopia ([...]), et algset massiivi mitte muuta
+let sortedItems = computed(() =>
+    [...items.value].sort((a, b) => priorities[a.priority].order - priorities[b.priority].order)
+);
+let doneItems = computed(() => sortedItems.value.filter(item => item.isDone));
+let toDoItems = computed(() => sortedItems.value.filter(item => !item.isDone));
 </script>
 
 <template>
@@ -45,7 +49,7 @@ let toDoItems = computed(() => items.value.filter(item => !item.isDone));
         </div>
     </div>
 
-    <ItemList :items="items" title="All items"></ItemList>
+    <ItemList :items="sortedItems" title="All items"></ItemList>
     <ItemList :items="doneItems" title="Done items"></ItemList>
     <ItemList :items="toDoItems" title="ToDo items"></ItemList>
 </template>
